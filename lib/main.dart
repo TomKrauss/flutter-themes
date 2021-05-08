@@ -78,6 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
     ),
     ThemeData.dark().copyWith(
         primaryColor: Colors.pink,
+        snackBarTheme: SnackBarThemeData(
+            backgroundColor: Colors.deepPurple,
+            contentTextStyle: TextStyle(color: Colors.lightGreenAccent, fontWeight: FontWeight.bold)),
         textTheme: TextTheme(
             headline2: TextStyle(color: Colors.greenAccent, fontSize: 30),
             bodyText1: TextStyle(color: Colors.yellowAccent, fontSize: 22, shadows: [
@@ -115,7 +118,13 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Headline", style: Theme.of(context).textTheme.headline2),
+            Text("Flutter Theme Demo", style: Theme.of(context).textTheme.headline2),
+            SizedBox(height: 10),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text("Press the FAB Button on the lower right to switch themes ->",
+                  style: Theme.of(context).textTheme.bodyText2),
+              Icon(Icons.palette)
+            ]),
             SizedBox(height: 10),
             Text("You've selected theme number $_currentThemeIdx", style: Theme.of(context).textTheme.bodyText1),
             SizedBox(height: 15),
@@ -137,6 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _showMessage() {
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Hello")));
   }
 }
