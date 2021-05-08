@@ -12,23 +12,19 @@ void main() {
 /// in the home widget.
 ///
 class ThemeDataWidget extends InheritedWidget {
-  final StreamController<ThemeData> themeDataController =
-      BehaviorSubject.seeded(ThemeData(primarySwatch: Colors.blue));
+  final StreamController<ThemeData> themeDataController = BehaviorSubject.seeded(ThemeData(primarySwatch: Colors.blue));
 
-  ThemeDataWidget({Key? key, required Widget child})
-      : super(key: key, child: child);
+  ThemeDataWidget({Key? key, required Widget child}) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) {
-    return themeDataController !=
-        (oldWidget as ThemeDataWidget).themeDataController;
+    return themeDataController != (oldWidget as ThemeDataWidget).themeDataController;
   }
 
   static ThemeDataWidget _contextWidget(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<ThemeDataWidget>()!;
 
-  static StreamController<ThemeData> themeStreamController(
-          BuildContext context) =>
+  static StreamController<ThemeData> themeStreamController(BuildContext context) =>
       _contextWidget(context).themeDataController;
 }
 
@@ -39,10 +35,9 @@ class DemoApplication extends StatelessWidget {
     return StreamBuilder(
         stream: ThemeDataWidget.themeStreamController(context).stream,
         builder: (context, snapshot) {
-          ThemeData data = snapshot.data != null
-              ? snapshot.data as ThemeData
-              : ThemeData(primarySwatch: Colors.blue);
+          ThemeData data = snapshot.data != null ? snapshot.data as ThemeData : ThemeData(primarySwatch: Colors.blue);
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: data,
             home: MyHomePage(title: 'Flutter dynamic Themes Demo'),
@@ -73,19 +68,31 @@ class _MyHomePageState extends State<MyHomePage> {
   List<ThemeData> _themes = [
     ThemeData(primarySwatch: Colors.blue),
     ThemeData(primarySwatch: Colors.amber),
-    ThemeData(primarySwatch: Colors.green),
-    // the following two themes cause bogus message being logged. For details refer to: https://github.com/flutter/flutter/issues/56639
+    ThemeData(primarySwatch: Colors.red, scaffoldBackgroundColor: Colors.yellow),
+    ThemeData(
+        primarySwatch: Colors.green,
+        elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(padding: EdgeInsets.all(20)))),
+    // the following two themes cause a bogus message being logged. For details refer to: https://github.com/flutter/flutter/issues/56639
     ThemeData.dark().copyWith(
       primaryColor: Colors.grey,
     ),
-    ThemeData.dark().copyWith(primaryColor: Colors.pink),
+    ThemeData.dark().copyWith(
+        primaryColor: Colors.pink,
+        textTheme: TextTheme(
+            headline2: TextStyle(color: Colors.greenAccent, fontSize: 30),
+            bodyText1: TextStyle(color: Colors.yellowAccent, fontSize: 22, shadows: [
+              Shadow(
+                offset: Offset(10.0, 10.0),
+                blurRadius: 3.0,
+                color: Colors.red,
+              )
+            ]))),
   ];
   int _currentThemeIdx = 0;
 
   void _changeTheme() {
     _currentThemeIdx = (_currentThemeIdx + 1) % _themes.length;
-    ThemeDataWidget.themeStreamController(context)
-        .add(_themes[_currentThemeIdx]);
+    ThemeDataWidget.themeStreamController(context).add(_themes[_currentThemeIdx]);
   }
 
   @override
@@ -108,9 +115,16 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              "You've selected theme $_currentThemeIdx:",
-            ),
+            Text("Headline", style: Theme.of(context).textTheme.headline2),
+            SizedBox(height: 10),
+            Text("You've selected theme number $_currentThemeIdx", style: Theme.of(context).textTheme.bodyText1),
+            SizedBox(height: 15),
+            ElevatedButton(
+                onPressed: _showMessage,
+                child: Text(
+                  "Say hello",
+                  textScaleFactor: 2,
+                ))
           ],
         ),
       ),
@@ -120,5 +134,9 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.palette),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  void _showMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Hello")));
   }
 }
