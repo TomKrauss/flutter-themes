@@ -35,7 +35,7 @@ class DemoApplication extends StatelessWidget {
     return StreamBuilder(
         stream: ThemeDataWidget.themeStreamController(context).stream,
         builder: (context, snapshot) {
-          ThemeData data = snapshot.data != null ? snapshot.data as ThemeData : ThemeData(primarySwatch: Colors.blue);
+          ThemeData data = snapshot.data != null ? snapshot.data as ThemeData : ThemeData(primarySwatch: Colors.blue, useMaterial3: true);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
@@ -66,9 +66,9 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<ThemeData> _themes = [
-    ThemeData(primarySwatch: Colors.blue),
-    ThemeData(primarySwatch: Colors.amber),
-    ThemeData(primarySwatch: Colors.red, scaffoldBackgroundColor: Colors.yellow),
+    ThemeData(useMaterial3: true, colorSchemeSeed: Colors.pink),
+    ThemeData(useMaterial3: true, primarySwatch: Colors.amber),
+    ThemeData(useMaterial3: true, primarySwatch: Colors.red, scaffoldBackgroundColor: Colors.yellow),
     ThemeData(
         primarySwatch: Colors.green,
         elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(padding: EdgeInsets.all(20)))),
@@ -119,20 +119,26 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text("Flutter Theme Demo", style: Theme.of(context).textTheme.headline2),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text("Press the FAB Button on the lower right to switch themes ->",
                   style: Theme.of(context).textTheme.bodyText2),
               Icon(Icons.palette)
             ]),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text("You've selected theme number $_currentThemeIdx", style: Theme.of(context).textTheme.bodyText1),
-            SizedBox(height: 15),
+            const SizedBox(height: 15),
             ElevatedButton(
                 onPressed: _showMessage,
                 child: Text(
                   "Say hello",
                   textScaleFactor: 2,
+                )),
+            const SizedBox(height: 15),
+            OutlinedButton(
+                onPressed: _showMessage,
+                child: Text(
+                  "Outlined Button",
                 ))
           ],
         ),
