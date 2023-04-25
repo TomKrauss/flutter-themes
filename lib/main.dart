@@ -4,7 +4,32 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 void main() {
-  runApp(ThemeDataWidget(child: DemoApplication()));
+  runApp(ThemeControllerWidget(child: DemoApplication()));
+}
+
+///
+/// Stateful widget providing the stream to the theme data.
+///
+class ThemeControllerWidget extends StatefulWidget {
+  final Widget child;
+  ThemeControllerWidget({Key? key, required this.child}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => ThemeControllerWidgetState();
+}
+
+class ThemeControllerWidgetState extends State<ThemeControllerWidget> {
+  final StreamController<ThemeData> themeDataController = BehaviorSubject.seeded(ThemeData(primarySwatch: Colors.blue));
+
+  @override
+  void dispose() {
+    super.dispose();
+    themeDataController.close();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return ThemeDataWidget(child: widget.child, themeDataController: themeDataController);
+  }
 }
 
 ///
@@ -12,9 +37,8 @@ void main() {
 /// in the home widget.
 ///
 class ThemeDataWidget extends InheritedWidget {
-  final StreamController<ThemeData> themeDataController = BehaviorSubject.seeded(ThemeData(primarySwatch: Colors.blue));
-
-  ThemeDataWidget({Key? key, required Widget child}) : super(key: key, child: child);
+  final StreamController<ThemeData> themeDataController;
+  ThemeDataWidget({Key? key, required Widget child, required this.themeDataController}) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) {
@@ -40,7 +64,7 @@ class DemoApplication extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: data,
-            home: MyHomePage(title: 'Flutter dynamic Themes Demo'),
+            home: MyHomePage(title: 'Flutter dynamic Theme Demo'),
           );
         });
   }
@@ -82,8 +106,8 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Colors.deepPurple,
             contentTextStyle: TextStyle(color: Colors.lightGreenAccent, fontWeight: FontWeight.bold)),
         textTheme: TextTheme(
-            headline2: TextStyle(color: Colors.greenAccent, fontSize: 30),
-            bodyText1: TextStyle(color: Colors.yellowAccent, fontSize: 22, shadows: [
+            displayMedium: TextStyle(color: Colors.greenAccent, fontSize: 30),
+            bodyLarge: TextStyle(color: Colors.yellowAccent, fontSize: 22, shadows: [
               Shadow(
                 offset: Offset(10.0, 10.0),
                 blurRadius: 3.0,
@@ -100,12 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -118,15 +136,15 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Flutter Theme Demo", style: Theme.of(context).textTheme.headline2),
+            Text("Flutter Theme Demo", style: Theme.of(context).textTheme.displayMedium),
             const SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text("Press the FAB Button on the lower right to switch themes ->",
-                  style: Theme.of(context).textTheme.bodyText2),
+                  style: Theme.of(context).textTheme.bodyMedium),
               Icon(Icons.palette)
             ]),
             const SizedBox(height: 10),
-            Text("You've selected theme number $_currentThemeIdx", style: Theme.of(context).textTheme.bodyText1),
+            Text("You've selected theme number $_currentThemeIdx", style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 15),
             ElevatedButton(
                 onPressed: _showMessage,
