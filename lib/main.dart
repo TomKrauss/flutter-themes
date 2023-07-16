@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 void main() {
-  runApp(ThemeControllerWidget(child: DemoApplication()));
+  runApp(const ThemeControllerWidget(child: DemoApplication()));
 }
 
 ///
@@ -12,7 +12,7 @@ void main() {
 ///
 class ThemeControllerWidget extends StatefulWidget {
   final Widget child;
-  ThemeControllerWidget({Key? key, required this.child}) : super(key: key);
+  const ThemeControllerWidget({Key? key, required this.child}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ThemeControllerWidgetState();
@@ -28,7 +28,7 @@ class ThemeControllerWidgetState extends State<ThemeControllerWidget> {
   }
   @override
   Widget build(BuildContext context) {
-    return ThemeDataWidget(child: widget.child, themeDataController: themeDataController);
+    return ThemeDataWidget(themeDataController: themeDataController, child: widget.child);
   }
 }
 
@@ -38,7 +38,7 @@ class ThemeControllerWidgetState extends State<ThemeControllerWidget> {
 ///
 class ThemeDataWidget extends InheritedWidget {
   final StreamController<ThemeData> themeDataController;
-  ThemeDataWidget({Key? key, required Widget child, required this.themeDataController}) : super(key: key, child: child);
+  const ThemeDataWidget({Key? key, required Widget child, required this.themeDataController}) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) {
@@ -53,6 +53,8 @@ class ThemeDataWidget extends InheritedWidget {
 }
 
 class DemoApplication extends StatelessWidget {
+  const DemoApplication({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -64,14 +66,14 @@ class DemoApplication extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: data,
-            home: MyHomePage(title: 'Flutter dynamic Theme Demo'),
+            home: const MyHomePage(title: 'Flutter dynamic Theme Demo'),
           );
         });
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -85,27 +87,27 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<ThemeData> _themes = [
+  final List<ThemeData> _themes = [
     ThemeData(useMaterial3: true, colorSchemeSeed: Colors.pink),
     ThemeData(useMaterial3: true, primarySwatch: Colors.amber),
     ThemeData(useMaterial3: true, primarySwatch: Colors.red, scaffoldBackgroundColor: Colors.yellow),
     ThemeData(
         primarySwatch: Colors.green,
-        elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(padding: EdgeInsets.all(20)))),
+        elevatedButtonTheme: ElevatedButtonThemeData(style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(20)))),
     // the following two themes cause a bogus message being logged. For details refer to: https://github.com/flutter/flutter/issues/56639
     ThemeData.dark().copyWith(
       primaryColor: Colors.grey,
     ),
     ThemeData.dark().copyWith(
         primaryColor: Colors.pink,
-        snackBarTheme: SnackBarThemeData(
+        snackBarTheme: const SnackBarThemeData(
             backgroundColor: Colors.deepPurple,
             contentTextStyle: TextStyle(color: Colors.lightGreenAccent, fontWeight: FontWeight.bold)),
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
             displayMedium: TextStyle(color: Colors.greenAccent, fontSize: 30),
             bodyLarge: TextStyle(color: Colors.yellowAccent, fontSize: 22, shadows: [
               Shadow(
@@ -141,21 +143,21 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text("Press the FAB Button on the lower right to switch themes ->",
                   style: Theme.of(context).textTheme.bodyMedium),
-              Icon(Icons.palette)
+              const Icon(Icons.palette)
             ]),
             const SizedBox(height: 10),
             Text("You've selected theme number $_currentThemeIdx", style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 15),
             ElevatedButton(
                 onPressed: _showMessage,
-                child: Text(
+                child: const Text(
                   "Say hello",
                   textScaleFactor: 2,
                 )),
             const SizedBox(height: 15),
             OutlinedButton(
                 onPressed: _showMessage,
-                child: Text(
+                child: const Text(
                   "Outlined Button",
                 ))
           ],
@@ -164,13 +166,13 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: _changeTheme,
         tooltip: 'Change Theme',
-        child: Icon(Icons.palette),
+        child: const Icon(Icons.palette),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
   void _showMessage() {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Hello")));
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Hello")));
   }
 }
