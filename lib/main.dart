@@ -91,6 +91,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final Set<String> _selectedSegments = {"A"};
   final List<ThemeData> _themes = [
     ThemeData(useMaterial3: true, colorSchemeSeed: Colors.pink),
     ThemeData(useMaterial3: true, primarySwatch: Colors.amber),
@@ -126,6 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -138,21 +140,43 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Flutter Theme Demo", style: Theme.of(context).textTheme.displayMedium),
+            Text("Flutter Theme Demo", style: textTheme.displayMedium),
             const SizedBox(height: 10),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text("Press the FAB Button on the lower right to switch themes ->",
-                  style: Theme.of(context).textTheme.bodyMedium),
+                  style: textTheme.bodyMedium),
               const Icon(Icons.palette)
             ]),
             const SizedBox(height: 10),
-            Text("You've selected theme number $_currentThemeIdx", style: Theme.of(context).textTheme.bodyLarge),
+            Text("You've selected theme number $_currentThemeIdx", style: textTheme.bodyLarge),
             const SizedBox(height: 15),
             ElevatedButton(
                 onPressed: _showMessage,
                 child: const Text(
-                  "Say hello",
-                  textScaleFactor: 2,
+                  "Say hello"
+                )),
+            const SizedBox(height: 15),
+            TextButton(
+                onPressed: _showMessage,
+                child: const Text(
+                  "Say hello from TextButton"
+                )),
+            SegmentedButton(segments: const [ButtonSegment(value: "A", label: Text("A")), ButtonSegment(value: "B", label: Text("B"))],
+                selected: _selectedSegments, emptySelectionAllowed: true, onSelectionChanged: (x) {
+                  setState(() {
+                    _selectedSegments.clear();
+                    _selectedSegments.addAll(x);
+                  });
+                }),
+            const SizedBox(height: 15),
+            FloatingActionButton(
+                onPressed: _showMessage,
+                child: const Icon(Icons.account_circle_sharp)),
+            const SizedBox(height: 15),
+            FilledButton(
+                onPressed: _showMessage,
+                child: const Text(
+                  "Filled Button",
                 )),
             const SizedBox(height: 15),
             OutlinedButton(
